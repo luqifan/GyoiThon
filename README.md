@@ -1,378 +1,632 @@
-[![Black Hat Arsenal](https://github.com/toolswatch/badges/blob/master/arsenal/2018.svg)](https://www.toolswatch.org/2018/01/black-hat-arsenal-asia-2018-great-lineup/)  
+![Black Hat Arsenal](https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/asia/2018.svg?sanitize=true)
 
 # **GyoiThon** ![gyoithon's logo](./img/gyoi_logo.png)  
 **Next generation penetration test tool**
 
 ---
 
-GyoiThon at **[Black Hat ASIA 2018 Arsenal](https://www.blackhat.com/asia-18/arsenal/schedule/index.html#gyoithon-9651)**.  
+Japanese page is [here](https://github.com/gyoisamurai/GyoiThon/wiki).  
+
+## Presentation
+ * January 25th,2018:[JANOG41](https://www.janog.gr.jp/meeting/janog41/program/sp5sts)  
+ * March 23th,2018:[Black Hat ASIA 2018 Arsenal](https://www.blackhat.com/asia-18/arsenal/schedule/index.html#gyoithon-9651)  
+ * August 12th,2018:[DEFCON26 DemoLabs](https://www.defcon.org/html/defcon-26/dc-26-demolabs.html#GyoiThon)  
+ * October 24th,2018:[OWS in CSS2018](https://www.iwsec.org/ows/2018/)  
+ * November 3rd,2018:[AV TOKYO 2018 HIVE](http://ja.avtokyo.org/avtokyo2018/event)  
+ * December 22-23th,2018:[SECCON YOROZU 2018](https://2018.seccon.jp/seccon/yorozu2018.html)  
+ * March 28th,2019:[Black Hat ASIA 2019 Arsenal](https://www.blackhat.com/asia-19/arsenal/schedule/index.html#gyoithon-penetration-testing-using-machine-learning-14359)  
+
+## Documents
+ * [Installation](https://github.com/gyoisamurai/GyoiThon/blob/master/README.md#Installation)  
+ * [Usage](https://github.com/gyoisamurai/GyoiThon/blob/master/README.md#Usage)  
+ * [Tips](https://github.com/gyoisamurai/GyoiThon/blob/master/README.md#Tips)  
+ * [Demonstration](https://www.youtube.com/watch?v=cFgyBJuYQQ4) (Youtube)  
+
+## Slack
+ * [https://gyoithon.slack.com](https://gyoithon.slack.com)  
+ [Let's join GyoiThon Slack!!](https://docs.google.com/forms/d/e/1FAIpQLSeuT-HNF-geek1IM3qBWViTVJbLUr3GZR2Hzuow30734X70gw/viewform)  
+
+## New function!!
+The new GyoiThon \(version 0.0.3\) can **automatically generate signature/train data** for detecting web products operated on the target server. You can get signatures/train data just by executing the following command.  
+
+ * ex) Generating **Joomla!** signatures.  
+ ```
+ root@kali:~/GyoiThon# python3 gyoithon.py -d --category=CMS --vendor=joomla! --package=Joomla!@3.9.4@_origin.tar.zip
+ ```
+
+ Generated Joomla! signatures.  
+ ```
+ CMS@joomla!@Joomla!@3.9.4@(/js/application.js)
+ CMS@joomla!@Joomla!@3.9.4@(/js/classes.js)/
+ CMS@joomla!@Joomla!@3.9.4@(/jui/css/bootstrap-extended.css)
+ CMS@joomla!@Joomla!@3.9.4@(/jui/css/bootstrap-responsive.css)
+ CMS@joomla!@Joomla!@3.9.4@(/jui/css/bootstrap-responsive.min.css)
+ ...snip...
+ ```
+
+ * Slide  
+ [BlackHat ASIA 2019](https://github.com/gyoisamurai/GyoiThon/blob/master/handout/BHASIA2019_slide.pdf)  
+ 
+ * Demo movie  
+ [Demo](https://www.youtube.com/watch?v=X8tW4S7c6s0)  
+
+If you need more information, please refer to [Usage](https://github.com/gyoisamurai/GyoiThon/blob/master/README.md#generating_sig).  
 
 ## Overview
- GyoiThon is a **growing penetration test tool using Machine Learning**.  
+GyoiThon is **Intelligence Gathering tool** for Web Server.  
 
- GyoiThon **identifies the software installed on web server** (OS, Middleware, Framework, CMS, etc...) based on the learning data. After that, it **executes valid exploits** for the identified software using Metasploit. Finally, it **generates reports** of scan results. GyoiThon executes the above processing **automatically**. 
+GyoiThon execute **remote access** to target Web server and **identifies product operated on the server** such as CMS, Web server software, Framework, Programming Language etc,. And, it can **execute exploit modules** to identified products using Metasploit. GyoiThon **fully automatically execute** above action.  
 
- * Processing steps  
- ![Processing flow](./img/processing_flow.png)
+GyoiThon's main features are following.  
 
- GyoiThon executes the above "Step1" - "Step4" fully automatically.  
- **User's only operation is to input the top URL** of the target web server in GyoiThon.
+ * Remote access/Fully automatic  
+ GyoiThon can **fully automatically** gather the information of target Web server using only **remote access**. You only execute GyoiThon once for your operation.  
 
- It is very easy!  
- You can identify vulnerabilities of the web servers without taking time and effort.
+ * Non-destructive test  
+ GyoiThon can gather information of target Web server using **only normally access**.  
+ But, when you use a part of option, GyoiThon execute abnormally access such as sending exploit modules.  
 
-## Processing flow
-#### Step 1. Gather HTTP responses.
- GyoiThon gathers several HTTP responses of target website while **crawling**.  
- The following are example of HTTP responses gathered by GyoiThon.  
+ * Gathering various information  
+ GyoiThon has various intelligence gathering engines such as Web crawler, Google Custom Search API, Censys, explorer of default contents, examination of cloud services etc,. By analyze gathered information using **strings pattern matching** and **machine learning**, GyoiThon can identify **product/version/CVE number** operated on the target web server, **unnecceary html comments**/**debug messages**, **login page** etc,.  
 
- * Example.1  
- ```
- HTTP/1.1 200 OK
- Date: Tue, 06 Mar 2018 03:01:57 GMT
- Connection: close
- Content-Type: text/html; charset=UTF-8
- Etag: "409ed-183-53c5f732641c0"
- Content-Length: 15271
+ * Examination of real vulnerability  
+ GyoiThon can execute exploit modules to identified products using Metasploit.  
+ As a result, it can **examine real vulnerability of target web server**.  
 
- ...snip...
- ```
+![Overview](https://github.com/gyoisamurai/GyoiThon/raw/master/img/overview.png)
 
- * Example.2  
- ```
- HTTP/1.1 200 OK
- Date: Tue, 06 Mar 2018 06:56:17 GMT
- Connection: close
- Content-Type: text/html; charset=UTF-8
- Set-Cookie: f00e68432b68050dee9abe33c389831e=0eba9cd0f75ca0912b4849777677f587;
- path=/;
- Content-Length: 37496
+| Note |
+|:-----|
+| If you are interested, **please use them in an environment under your control and at your own risk**. |
 
- ...snip...
- ```
-
- * Example.3  
- ```
- HTTP/1.1 200 OK
- Date: Tue, 06 Mar 2018 04:19:19 GMT
- Connection: close
- Content-Type: text/html; charset=UTF-8
- Content-Length: 11819
-
- ...snip...
-
-  <script src="/core/misc/drupal.js?v=8.3.1"></script>
- ```
-
-#### Step 2. Identify product name.
- GyoiThon identifies product name installed on web server using following **two methods**.
-
-##### 1. Based on Machine Learning.  
-  By using Machine Learning (**Naive Bayes**), GyoiThon identifies software based on a **combination of slightly different features** (Etag value, Cookie value, specific HTML tag etc.) for each software. Naive Bayes is learned using the training data which example below (Training data). Unlike the signature base, Naive Bayes is stochastically identified based on various features included in HTTP response when it cannot be identified software in one feature.
-
-   * Example.1  
-   ```
-   Etag: "409ed-183-53c5f732641c0"
-   ```
-   GyoiThon can identify the web server software **Apache**.  
-   This is because GyoiThon learns features of Apache such as "**Etag header value** (409ed-183-53c5f732641c0). In our survey, Apache use **combination of numeral and lower case letters as the Etag value**. And, Etag value is **separated 4-5 digits and 3-4 digits and 12 digits, final digit is 0** in many cases.  
-
-   * Example.2  
-   ```
-   Set-Cookie: f00e68432b68050dee9abe33c389831e=0eba9cd0f75ca0912b4849777677f587;
-   ```
-   GyoiThon can identify the CMS **Joomla!**.  
-   This is because GyoiThon learns features of Joomla! such as "**Cookie name** (f00e6 ... 9831e) " and "**Cookie value** (0eba9 ... 7f587). In our survey, Joomla! uses **32 lower case letters as the Cookie name and Cookie value** in many cases.
-
-###### Training data (One example)  
- * Joomla! (CMS)
- ```
- Set-Cookie: ([a-z0-9]{32})=[a-z0-9]{26,32};
- Set-Cookie: [a-z0-9]{32}=([a-z0-9]{26,32});
- ...snip...
- ```
- * HeartCore (Japanese famous CMS)  
- ```
- Set-Cookie:.*=([A-Z0-9]{32});.*
- <meta name=["'](author)["'] content=["']{2}.*
- ...snip...
- ```
-
- * Apache (Web server software)  
- ```
- Etag:.*".*-[0-9a-z]{3,4}-[0-9a-z]{13}")[\r\n]
- ...snip...
- ```
-
-##### 2. Based on String matching.  
- Of course, GyoiThon can identify software by **string matching** also used in traditional penetration test tools. Examples are shown below.
-
-   * Example.3  
-   ```
-   <script src="/core/misc/drupal.js?v=8.3.1"></script>
-   ```
-   GyoiThon can identify the CMS **Drupal**.  
-   It is very easy.  
-
-#### Step 3. Exploit using Metasploit.
-GyoiThon executes exploit corresponding to the identified software using Metasploit and it checks whether the software is affected by the vulnerability.  
-
- ![Link with Metasploit](./img/link_with_metasploit.png)  
-
- * Running example  
- ```
- [*] exploit/multi/http/struts_code_exec_exception_delegator, target: 1, payload: linux/x86/shell/reverse_nonx_tcp, result: failure
- [*] exploit/multi/http/struts_code_exec_exception_delegator, target: 1, payload: linux/x86/shell/reverse_tcp, result: failure
- [*] exploit/multi/http/struts_code_exec_exception_delegator, target: 1, payload: linux/x86/shell/reverse_tcp_uuid, result: failure
- [*] exploit/multi/http/struts_code_exec_exception_delegator, target: 1, payload: linux/x86/shell_bind_ipv6_tcp, result: failure
- [*] exploit/multi/http/struts_code_exec_exception_delegator, target: 1, payload: linux/x86/shell_bind_tcp, result: failure
-
- ...snip...
-
- [*] exploit/linux/http/apache_continuum_cmd_exec, target: 0, payload: generic/custom, result: failure
- [*] exploit/linux/http/apache_continuum_cmd_exec, target: 0, payload: generic/debug_trap, result: failure
- [*] exploit/linux/http/apache_continuum_cmd_exec, target: 0, payload: generic/shell_bind_tcp, result: failure
- [*] exploit/linux/http/apache_continuum_cmd_exec, target: 0, payload: generic/shell_reverse_tcp, result: failure
- [*] exploit/linux/http/apache_continuum_cmd_exec, target: 0, payload: generic/tight_loop, result: bingo!!
- ```
-
-#### Step 4. Generate scan report.
-GyoiThon generates a report that summarizes vulnerabilities.  
-Report's style is html.  
-
- * sample
- [![gyoithon_report](./img/gyoi_report.png)](https://github.com/gyoisamurai/GyoiThon/blob/master/classifier4gyoithon/report/gyoithon_report.html)
-
-## Demonstration movie.
-
- [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/jmi43eZOE9w/0.jpg)](http://www.youtube.com/watch?v=jmi43eZOE9w)  
-
- https://www.youtube.com/watch?v=jmi43eZOE9w
-
-## Usage
-#### Step.0 Initialize Metasploit DB
-Firstly, you initialize metasploit db (postgreSQL) using msfdb command.
-
+## <a name='Installation'>Installation</a>
+1. git clone GyoiThon's repository.  
 ```
-root@kali:~# msfdb init
+root@kali:~# git clone https://github.com/gyoisamurai/GyoiThon.git
 ```
 
-#### Step.1 Launch Metasploit Framework
-You launch Metasploit on the remote server that installed Metasploit Framework such as Kali Linux.
-
+2. Get python3-pip.  
 ```
-root@kali:~# msfconsole
-______________________________________________________________________________
-|                                                                              |
-|                   METASPLOIT CYBER MISSILE COMMAND V4                        |
-|______________________________________________________________________________|
-     \\                                  /                      /
-      \\     .                          /                      /            x
-       \\                              /                      /
-        \\                            /          +           /
-         \\            +             /                      /
-          *                        /                      /
-                                  /      .               /
-   X                             /                      /            X
-                                /                     ###
-                               /                     # % #
-                              /                       ###
-                     .       /
-    .                       /      .            *           .
-                           /
-                          *
-                 +                       *
-
-                                      ^
-####      __     __     __          #######         __     __     __        ####
-####    /    \\ /    \\ /    \\      ###########     /    \\ /    \\ /    \\      ####
-################################################################################
-################################################################################
-# WAVE 4 ######## SCORE 31337 ################################## HIGH FFFFFFFF #
-################################################################################
-                                                          https://metasploit.com
-
-
-      =[ metasploit v4.16.15-dev                         ]
-+ -- --=[ 1699 exploits - 968 auxiliary - 299 post        ]
-+ -- --=[ 503 payloads - 40 encoders - 10 nops            ]
-+ -- --=[ Free Metasploit Pro trial: http://r-7.co/trymsp ]
-
-msf >
+root@kali:~# apt-get update
+root@kali:~# apt-get install python3-pip
 ```
 
-#### Step.2 Launch RPC Server
-You launch RPC Server of Metasploit following.
-
+3. install required python packages.  
 ```
-msf> load msgrpc ServerHost=192.168.220.144 ServerPort=55553 User=test Pass=test1234
-[*] MSGRPC Service: 192.168.220.144:55553
-[*] MSGRPC Username: test
-[*] MSGRPC Password: test1234
-[*] Successfully loaded plugin: msgrpc
+root@kali:~# cd GyoiThon
+root@kali:~/GyoiThon# pip3 install -r requirements.txt
 ```
 
-|msgrpc options|description|
-|:---|:---|
-|ServerHost|IP address of your server that launched Metasploit. Above example is `192.168.220.144`.|
-|ServerPort|Any port number of your server that launched Metasploit. Above example is `55553`.|
-|User|Any user name using authentication (default => msf). Above example is `test`.|
-|Pass|Any password using authentication (default => random string). Above example is `test1234`.|
+4. Edit config.ini of GyoiThon.  
+You have to edit your `config.ini`.  
+More information is Usage.  
 
-#### Step.3 Edit config file.
-You have to change following value in [`config.ini`](https://github.com/gyoisamurai/GyoiThon/blob/master/classifier4gyoithon/config.ini)
+## <a name='Usage'>Usage</a>
+By using [default mode](https://github.com/gyoisamurai/GyoiThon/blob/master/README.md#default_mode) without option and [combination of several options](https://github.com/gyoisamurai/GyoiThon/blob/master/README.md#complex_mode), GyoiThon can gather various information of target web server.  
 
 ```
-...snip...
-
-[GyoiExploit]
-server_host      : 192.168.220.144
-server_port      : 55553
-msgrpc_user      : test
-msgrpc_pass      : test1234
-timeout          : 10
-LHOST            : 192.168.220.144
-LPORT            : 4444
-
-...snip...
+usage:
+    gyoithon.py [-s] [-m] [-g] [-e] [-c] [-p] [-l --log_path=<path>] [-d --category=<category> --vendor=<vendor> --package=<package>]
+    gyoithon.py -h | --help
+options:
+    -s   Optional : Examine cloud service.
+    -m   Optional : Analyze HTTP response for identify product/version using Machine Learning.
+    -g   Optional : Google Custom Search for identify product/version.
+    -e   Optional : Explore default path of product.
+    -c   Optional : Discover open ports and wrong ssl server certification using Censys.
+    -p   Optional : Execute exploit module using Metasploit.
+    -l   Optional : Analyze log based HTTP response for identify product/version.
+    -d   Optional : Development of signature and train data.
+    -h --help     Show this help message and exit.
 ```
 
- |config|description|
- |:---|:---|
- |server_host|IP address of your server that launched Metasploit. Your setting value `ServerHost` in Step2.|
- |server_port|Any port number of your server that launched Metasploit. Your setting value `ServerPort` in Step2.|
- |msgrpc_user|Metasploit's user name using authentication. Your setting value `User` in Step2.|
- |msgrpc_pass|Metasploit's password using authentication. Your setting value `Pass` in Step2.|
- |LHOST|IP address of your server that launched Metasploit. Your setting value `ServerHost` in Step2.|
+### Preparation.  
+1. Edit target file `host.txt`.  
+You have to write target web server to the `host.txt`.  
+Writting format is `protocol FQDN(or IP address) Port Crawling_root_path`.  
 
-#### Step.4 Edit target file.
-GyoiThon accesses target server using host.txt.  
-So, you have to edit [`host.txt`](https://github.com/gyoisamurai/GyoiThon/blob/master/host.txt) before executing GyoiThon.  
-
- * sample of host.txt  
- target server => 192.168.220.148  
- target port => 80  
- target path => /oscommerce/catalog/
- ```
- 192.168.220.148 80 /oscommerce/catalog/
- ```
-
-You have to separate IP address, port number and target path using single space.  
-
- |Note|
- |:---|
- |Current `gyoithon.py` is provisional version that without crawling function. We'll upgrade `gyoithon.py` by April 9. Then, target path will be unnecessary.|
-
-#### Step.5 Run GyoiThon
-You execute GyoiThon following command.
-
+* Example.  
 ```
-local@client:~$ python gyoithon.py
+https gyoithon.example.com 443 /
 ```
 
-#### Step.6 Check scan report
-Please check scan report using any web browser.  
+If you want to indicate multiple target information, you have to write below.  
 
 ```
-local@client:~$ firefox "gyoithon root path"/classifier4gyoithon/report/gyoithon_report.html
+https gyoithon.example.com 443 /
+http 192.168.220.129 80 /vicnum/
+https www.example.com 443 /catalog/
 ```
 
-## Tips
-#### 1. How to add string matching patterns.  
-`signatures` path includes four files corresponding to each product categories.  
+| Note |
+|:-----|
+| You insert `/` at the beginning and end of Root Path. |
 
+2. Edit configuration file `config.ini`.  
+Parameters to be changed by the user are defined in the setting file `config.ini`.  
+If you want to change parameters, edit `config.ini`.  
+Detail of `config.ini` is [here](https://github.com/gyoisamurai/GyoiThon/wiki/Configure).  
+
+### Execution of GyoiThon.  
+#### <a name='default_mode'>1. Default mode.</a>  
 ```
-local@client:~$ ls "gyoithon root path"/signatures/
-signature_cms.txt
-signature_framework.txt
-signature_os.txt
-signature_web.txt
-```
-
- * `signature_cms.txt`  
- It includes string matching patterns of CMS.  
- * `signature_framework.txt`  
- It includes string matching patterns of FrameWork.  
- * `signature_os.txt`  
- It includes string matching patterns of Operating System.  
- * `signature_web.txt`  
- It includes string matching patterns of Web server software.  
-
-If you want to add new string matching patterns, you add new string matching patterns at last line in each file.  
-
-ex) How to add new string matching pattern of CMS at `signature_cms.txt`.  
-```
-tikiwiki@(Powered by TikiWiki)
-wordpress@<.*=(.*/wp-).*/.*>
-wordpress@(<meta name="generator" content="WordPress).*>
-
-...snip...
-
-typo@.*(href="fileadmin/templates/).*>
-typo@(<meta name="generator" content="TYPO3 CMS).*>
-"new product name"@"regex pattern"
-[EOF]
+root@kali:~/GyoiThon# python3 gyoithon.py
 ```
 
- |Note|
- |:---|
- |Above new product name must be a name that Metasploit can identify. And you have to separate new product name and regex pattern using `@`.|
+The default mode gathers following minimum information.  
 
+ 1. Gathering of HTTP responses by Web crawling.  
+ 2. Identification of product/version using string pattern matching.  
+ 3. Examination of CVE number (from NVD) for identified products.  
+ 4. Examination of unneccesary HTML/JavaScript comments.  
+ 5. Examination of unneccesary debug messages.  
+ 6. Examination of login pages.  
 
-#### 2. How to add learning data.  
-`signatures` path includes four files corresponding to each product categories.  
+ * Crawling setting  
+ GyoiThon uses `Scrapy` that Python's library.  
+ By change the parameters in `config.ini`, you can change setting of Scrapy.  
+ 
+ |Category|Parameter|Description|
+ |:----|:----|:----|
+ |Spider|depth_limit|Maximum depth of crawling. Default value is `2` layer. |
+ ||delay_time|Delay time of crawling. Default value is `3` (sec). |
+ ||time_out|Spider close option. Timeout of crawling. Default value is `600` (sec). |
+ ||item_count|Spider close option. Maximum items. Default value is `300`. |
+ ||page_count|Spider close option. Maximum items per page. Default value is `0` (no limit). |
+ ||error_count|Spider close option. Maximum errors. Default value is `0` (no limit). |
+
+ * Examination speed setting  
+ The examination number and HTTP response size greatly affect examination times.   
+ By change the parameters in `config.ini`, you can adjust examination speed.  
+ 
+ |Category|Parameter|Description|
+ |:----|:----|:----|
+ |Common|max_target_url|Maximum examination URL number. If the URL number gathered by Web Crawling exceeds this parameter value, excess URL number is discarded. Default value is `100`. `0` is unlimited.|
+ ||max_target_byte|Maximum examination response size. If the response size exceeds this parameter value, excess response size is discarded. Default value is `10000` byte. `0` is unlimited.|
+ ||scramble|The URL list gathered by Web crawling is randomly ordered. Default value is `1` (validity). `0` is invalid.|
+ 
+ | Note |
+ |:-----|
+ | The examination speed and accuracy are trade-off. |
+
+#### 2. Examination of cloud services mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -s
+```
+
+By add `-s` option, GyoiThon identifies target web server uses cloud service or not  in addition to default mode.  
+Before execution, you must change the below parameter of `config.ini`.  
+
+|Category|Parameter|Description|
+|:----|:----|:----|
+|CloudChecker|azure_ip_range|Source URL of Azure Datacenter IP Ranges. |
+
+This parameter is source URL of Azure Datacenter IP range. This URL is changed a few per day. So, you must get the latest URL from link "click here to download manually" of page "[Microsoft Azure Datacenter IP Ranges](https://www.microsoft.com/en-us/download/confirmation.aspx?id=41653)" and set it to above parameter before execute GyoiThon.  
+
+#### 3. Machine Learning analysis mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -m
+```
+
+By add `-m` option, GyoiThon identifies products/version using Machine Learning (Naive Bayes) in addition to default mode.  
+
+#### 4. Google Hacking mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -g
+```
+
+By add `-g` option, GyoiThon identifies products/version using Google Custom Search API in addition to default mode. Before execution, you must set [API key](https://console.cloud.google.com/apis/dashboard) and [Search engine ID](https://support.google.com/customsearch/answer/2649143?hl=ja) to the below parameters.  
+
+|Category|Parameter|Description|
+|:----|:----|:----|
+|GoogleHack|api_key|API key of Google Custom Search API. |
+||search_engine_id|Google search engine ID. |
+
+| Note |
+|:-----|
+| You can use free Google Custom Search API of 100 queries per day. But, if you want to use more than 100 queries, you must pay fee the Google Custom Search API service. |
+
+#### 5. Exploration of default contents mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -e
+```
+
+By add -e option, GyoiThon explores the default contents of products such as CMS, Web server software in addition to default mode.  
+By change the parameters in `config.ini`, you can change setting of exploration.  
+
+|Category|Parameter|Description|
+|:----|:----|:----|
+|ContentExplorer|delay_time|Delay time of exploration. Default value is `1` (sec). |
+
+| Note |
+|:-----|
+| When you use this option, may be affected to heavy load of server because of GyoiThon execute numerous accesses (hundreds accesses) against the target web server. In addition, by numerous 404 error logs are wrote to access log, it may be to caught by SOC (Security Operation Center). So, if you use this option, **please notify person concerned such as SOC, administrator and use them in an environment under your control and at your own risk and**. |
+
+#### 6. Censys cooperation mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -c
+```
+
+By add `-c` option, GyoiThon examines open port number and server certification using [Censys](https://censys.io/).  
+Before execution, you must set API key and Secret key to the below parameters.  
+
+|Category|Parameter|Description|
+|:----|:----|:----|
+|Censys|api_id|API key of Censys. |
+||secret|Secret key of Censys. |
+
+#### 7. Metasploit cooperation mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -p
+```
+
+By add `-p` option, GyoiThon examines real vulnerabilities such as DoS and backdoor using Metasploit in addition to default mode.  
+Before execution, you must launch RPC server of Metasploit and set below parameters in `config.ini`.  
+
+|Category|Parameter|Description|
+|:----|:----|:----|
+|Exploit|server_host|Allocated IP address to the RPC Server (`msgrpc`). |
+||server_port|Allocated port number to the RPC Server (`msgrpc`). |
+||msgrpc_user|User ID for authorization of `msgrpc`. |
+||msgrpc_pass|Password for authorization of `msgrpc`. |
+||LHOST|Allocated IP address to the RPC Server (`msgrpc`).|
+
+| Note |
+|:-----|
+| When you use this option, may be heavily affected to server operation because of GyoiThon execute the exploit against the target web server. In addition, this option may be caught by SOC (Security Operation Center) because of exploits are like a real attacks. So, if you use this option, **please notify person concerned such as SOC, administrator and use them in an environment under your control and at your own risk and**. |
+
+#### 8. Stored logs based analysis mode.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -l --log_path="Full path of stored logs"
+```
+
+By add `-l` option, GyoiThon executes various examination using stored HTTP responses without web crawling.  
+
+This mode assumes the web application that GyoiThon cannot execute web crawling.  
+GyoiThon can execute various examination similar web crawling of default mode using stored HTTP responses gathered by local proxy tool.  
+
+| Note |
+|:-----|
+| Log file's extension is `.log`. |
+
+#### <a name='complex_mode'>9. Combination of multiple options</a>.  
+##### Combination of "Examination of cloud services mode" and "Machine Learning analysis mode".
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -s -m
+```
+
+##### Combination of "Examination of cloud services mode" and "Google Hacking mode".
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -s -g
+```
+
+##### Combination of "Examination of cloud services mode", "Machine Learning analysis mode" and "Google Hacking mode".
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -s -m -g
+```
+
+##### All option.
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -s -m -g -e -c -p -l --log_path="Full path of stored logs"
+```
+
+#### <a name='generating_sig'>10. Generating signature/train data mode</a>.  
+```
+root@kali:~/GyoiThon# python3 gyoithon.py -d --category=CMS --vendor=joomla! --package=Joomla!@3.9.4@_origin.tar.zip
+```
+
+By add `-d` option, GyoiThon generates signatures/train data for detecting Web products operated on the target Web Server.  
+The options is following.  
+
+|Option|Description|Example|
+|:----|:----|:----|
+|--category|Product's category in signature/train data.|`OS` or `WEB` or `FRAMEWORK` or `CMS`. |
+|--vendor|Product's vendor name in signature/train data. |`wordpress`, `joomla!`, `drupal`.|
+|--package|Importing target package file name. You have to separate three fields that product name, version and extension using `@`.|`WordPress@4.9.8@.tar.gz`, `Joomla!@3.9.4@_origin.tar.zip`, `Drupal@8.6.3@.tar.gz`. |
+
+### Check report.  
+After finished execution of GyoiThon, reports of each target are generated to the following path.    
 
 ```
-local@client:~$ ls "gyoithon root path"/classifier4gyoithon/train_data/
+root@kali:~/GyoiThon/report# ls
+gyoithon_report_192.168.220.129_80_1082018338.csv
+gyoithon_report_192.168.220.129_80_bodgeit.csv
+gyoithon_report_192.168.220.129_80_cyclone.csv
+gyoithon_report_192.168.220.129_80_vicnum.csv
+gyoithon_report_192.168.220.129_80_WackoPicko.csv
+gyoithon_censys_report_www.gyoithon.example.com_443_test.csv
+```
+
+GyoiThon generates following two types report.  
+
+ * `gyoithon_report_target FQDN(or IP address)_Port number_Root Path.csv`.  
+ This is main report that mainly including product name, version, cve etc,.  
+ Report format is `gyoithon_report_target FQDN(or IP address)_Port number_Root Path.csv`.  
+ Each column's detail is following.  
+
+|Column|Description|Example|
+|:----|:----|:----|
+|fqdn|FQDN of target web server.|`www.gyoithon.example.com`|
+|ip_addr|IP address of target web server.|`192.168.220.129`|
+|port|Port number of target web server.|`80`|
+|cloud_type|Cloud service name (Azure or AWS or GCP or Unknown).|`AWS`|
+|method|Examination way of GyoiThon.|`Crawling`|
+|url|Accessed URL.|`http://192.168.220.129:80/WackoPicko/admin/index.php?page=login`|
+|vendor_name|Vendor name of identified products.|`apache`|
+|prod_name|Identified products.|`http_server`|
+|prod_version|Version of identified products.|`2.2.14`|
+|prod_trigger|Trigger of identified products.|`Apache/2.2.14`|
+|prod_type|Product category (Web or CMS or Framework etc..).|`Web`|
+|prod_vuln|CVE number according to identified products (desc CVSS score).|`CVE-2017-3167, CVE-2017-3169, CVE-2017-7668` ...|
+|origin_login|Login page is existing or not (Log: Analysis using Machine Leaerning, Url: Analysis using string pattern matching in URL.|`Log : 37.5 %\nUrl : 100.0 %`|
+|origin_login_trigger|Trigger of identifed login page.|`Log : name",<input type="password"\nUrl : login`|
+|wrong_comment|Identified unnecessary comments.|`パスワードは「password1234」です。`|
+|error_msg|Identified unnecessary debug messages.|`Warning: mysql_connect() ..snip.. in auth.php on line 38`|
+|server_header|Server header of HTTP response.|`Server: Apache/2.2.14 (Ubuntu) mod_mono/2.4.3 PHP/5.3.2`|
+|log|Path of raw data.|`/usr/home/~snip~/http_192.168.220.129_80_20181112170525765.log`|
+|date|Examination date.|`2018/11/12  17:05:25`|
+
+ * `gyoithon_censys_report_target FQDN(or IP address)_Port number_Root Path.csv`.  
+ This is search result report using Censys that including open ports, certification information etc,.  
+ Report format is `gyoithon_censys_report_target FQDN(or IP address)_Port number_Root Path.csv`.  
+ Each column's detail is following.  
+
+|Column|Description|Example|
+|:----|:----|:----|
+|fqdn|FQDN of target web server.|`www.gyoithon.example.com`|
+|ip_addr|IP address of target web server.|`192.168.220.129`|
+|category|Information category.|`Server Info` or `Certification Info`|
+|open_port|Open web port.|`443`|
+|protocol|Protocol of open web port.|`https`|
+|sig_algorithm|Signature algorithm of certification.|`SHA256-RSA`|
+|cname|Common name of certification.|`www.gyoithon.example.com`|
+|valid_start|Validity start date of certification.|`2018-08-15T00:00:00Z`|
+|valid_end|Validity end date of certification.|`2019-09-16T12:00:00Z`|
+|organization|Organization name of certification.|`GyoiThon coorporation, Inc.`|
+|date|Examination date.|`2018/11/22  11:19:36`|
+
+| Note |
+|:-----|
+| Because Censys needs several days to several weeks to survey the entire Internet, the information obtained from Censys may not be up-to-date.|
+
+## <a name='Tips'>Tips</a>
+### 1. How to manually add new signature (string matching patterns).  
+`signatures` path includes below files.  
+
+```
+root@kali:~/GyoiThon/signatures/ ls
+signature_product.txt
+signature_default_content.txt
+signature_search_query.txt
+signature_comment.txt
+signature_error.txt
+signature_page_type_from_url.txt
+```
+
+#### `signature_product.txt`  
+This is string matching patterns for identification of product in <a name='default_mode'>default mode</a>.  
+If you want to add new string matching pattern, you have to write it such following format.   
+ 
+```
+Format: field1@field2@field3@field4@field5
+```
+
+|Type|Field#|Description|Example|
+|:---|:---|:---|:---|
+|Required|1|Product Category.|`CMS`|
+|Required|2|Vendor name.|`drupal`|
+|Required|3|Product name.|`drupal`|
+|Optional|4|Version binded with this signature.|`8.0` |
+|Required|5|Regex of identifying product.|`.*(X-Generator: Drupal 8).*`|
+
+If you don't need optional field, you must set `*` to this field.  
+ 
+* Example  
+```
+CMS@wordpress@wordpress@*@.*(WordPress ([0-9]+[\.0-9]*[\.0-9]*)).*
+CMS@drupal@drupal@8.0@.*(X-Generator: Drupal 8).*
+```
+
+| Note |
+|:-----|
+| If you want to extract product version, you write two regex groups (**the second regex is used for version extraction**). |
+
+#### `signature_default_content.txt`  
+This is string matching patterns for identification of product in <a name='explore_contents_mode'>Exploration of default contents mode</a>.  
+If you want to add new string matching pattern, you have to write it such following format.   
+
+```
+Format: field1@field2@field3@field4@field5@field6@field7@field8
+```
+
+|Type|Field#|Description|Example|
+|:---|:---|:---|:---|
+|Required|1|Product Category.|`CMS`|
+|Required|2|Vendor name.|`sixapart`|
+|Required|3|Product name.|`movabletype`|
+|Optional|4|Version binded with this signature.|`*` |
+|Required|5|Explore path|`/readme.html`|
+|Optional|6|Regex of to confirm product.|`.*(Movable Type).*`|
+|Optional|7|Regex of identifying version.|`(v=([0-9]+[\.0-9]*[\.0-9]*))`|
+|Required|8|Login page or not.|Login page is `1`, Not login page is `0`|
+
+If you don't need optional field, you must set `*` to this field.  
+
+* Example  
+```
+Web@apache@http_server@*@/server-status@*@Version:.*(Apache/([0-9]+[\.0-9]*[\.0-9]*))@0
+CMS@sixapart@movabletype@*@/readme.html@.*(Movable Type).*@(v=([0-9]+[\.0-9]*[\.0-9]*))@0
+```
+
+| Note |
+|:-----|
+| If you want to extract product version, you write two regex groups (**the second regex is used for version extraction**). |
+
+| Note |
+|:-----|
+| If GyoiThon cannot confirm the product by just `Explore path`, you need to indicate the `Regex of to confirm product` field. GyoiThon accesses the URL that `Explore path` and examines the HTTP response using `Regex of to confirm product`. If this regex matches, GyoiThon judges that the product exists. |
+
+#### `signature_search_query.txt`  
+This is Google Custom Search query for identification of product in <a name='google_hacking_mode'>Google Hacking mode</a>.  
+If you want to add new query, you have to write it such following format.   
+
+```
+Format: field1@field2@field3@field4@field5@field6@field7@field8
+```
+
+|Type|Field#|Description|Example|
+|:---|:---|:---|:---|
+|Optional|1|Product Category.|`CMS`|
+|Optional|2|Vendor name.|`sixapart`|
+|Optional|3|Product name.|`movabletype`|
+|Optional|4|Version binded with this signature.|`*` |
+|Required|5|Google Custom Search query|`inurl:/readme.html`|
+|Optional|6|Regex of to confirm product.|`.*(Movable Type).*`|
+|Optional|7|Regex of identifying version.|`(v=([0-9]+[\.0-9]*[\.0-9]*))`|
+|Optional|8|Login page or not.|Login page is `1`, Not login page is `0`|
+
+If you don't need optional field, you must set `*` to this field.  
+
+* Example  
+```
+Web@apache@http_server@*@inurl:/server-status@*@Version:.*(Apache/([0-9]+[\.0-9]*[\.0-9]*))@0
+CMS@sixapart@movabletype@*@inurl:/readme.html@.*(Movable Type).*@(v=([0-9]+[\.0-9]*[\.0-9]*))@0
+*@*@*@*@filetype:bak@*@*@0
+```
+
+| Note |
+|:-----|
+| If you want to extract product version, you write two regex groups (**the second regex is used for version extraction**). |
+
+| Note |
+|:-----|
+| If GyoiThon cannot confirm the product by just `Google Custom Search query`, you need to indicate the `Regex of to confirm product` field. GyoiThon accesses the URL included in the execution result of Google Custom Search API and examines the HTTP response using `Regex of to confirm product`. If this regex matches, GyoiThon judges that the product exists. |
+
+#### `signature_comment.txt`  
+This is string matching patterns for identification of unnecessary comments in <a name='default_mode'>default mode</a>.  
+If you want to add new string matching pattern, you have to write it such following format.   
+
+```
+Format: field1
+```
+
+|Type|Field#|Description|
+|:---|:---|:---|
+|Required|1|Regex of unnecessary comment.|
+
+* Example  
+```
+(user\s*=|[\"']user[\"']\s*:|user_id\s*=|[\"']user_id[\"']\s*:|id\s*=|[\"']id[\"']\s*:)
+(select\s+[\s\r\n\w\d,\"']*\s+from)
+```
+
+#### `signature_error.txt`  
+This is string matching patterns for identification of unnecessary debug message in <a name='default_mode'>default mode</a>.  
+If you want to add new string matching pattern, you have to write it such following format.   
+
+```
+Format: field1
+```
+
+|Type|Field#|Description|
+|:---|:---|:---|
+|Required|1|Regex of unnecessary debug message.|
+
+* Example  
+```
+(ORA-[0-9a-zA-Z\.])
+(fail|error|notice|parse|warning|fatal)[^\n]*line[^\n]*[0-9]+
+```
+
+#### `signature_page_type_from_url.txt`  
+This is string matching patterns for URL based identification of page type in <a name='default_mode'>default mode</a>.  
+If you want to add new string matching pattern, you have to write it such following format.   
+
+```
+Format: field1@field2
+```
+
+|Type|Field#|Description|
+|:---|:---|:---|
+|Required|1|Page type.|
+|Required|2|Regex of identifying page type.|
+
+* Example  
+```
+Login@.*(login|log_in|logon|log_on|signin|sign_in).*
+```
+
+|Note|
+|:---|
+|Above vendor name and product name must be match a name in [CPE format](https://en.wikipedia.org/wiki/Common_Platform_Enumeration).|
+
+### 2. How to manually add learning data.  
+`modules/train_data/` path includes two train data for Machine Learning.  
+
+```
+root@kali:~/GyoiThon/modules/train_data/ ls
 train_cms_in.txt
-train_framework_in.txt
-train_os_in.txt
-train_web_in.txt
+train_page_type.txt
 ```
 
- * `train_cms_in.txt`  
- It includes learning data of CMS.  
- * `train_framework_in.txt`  
- It includes learning data of FrameWork.  
- * `train_os_in.txt`  
- It includes learning data of Operating System.  
- * `train_web_in.txt`  
- It includes learning data of Web server software.  
+#### `train_cms_in.txt`  
+This is train data for Machine Learning analysis in <a name='machine_learning_mode'>Machine Learning mode</a>.  
+If you want to add new train data, you have to write it such following format.   
 
-If you want to add new learning data, you add learning data at last line in each file.  
-
-ex) How to add new learning data of CMS at `train_cms_in.txt`.  
 ```
-joomla@(Set-Cookie: [a-z0-9]{32}=.*);
-joomla@(Set-Cookie: .*=[a-z0-9]{26,32});
+Format: field1@field2@field3@field4
+```
+
+|Type|Field#|Description|Example|
+|:---|:---|:---|:---|
+|Required|1|Vendor name.|`joomla`|
+|Required|2|Product name.|`joomla\!`|
+|Optional|3|Version binded with this train data.|`*` |
+|Required|4|Feature of product expressed by regex.|`(Set-Cookie: [a-z0-9]{32}=.*);`|
+
+If you don't need optional field, you must set `*` to this field.  
+
+* Example  
+```
+joomla@joomla\!@*@(Set-Cookie: [a-z0-9]{32}=.*);
+joomla@joomla\!@*@(Set-Cookie: .*=[a-z0-9]{26,32});
+heartcore@heartcore@*@(Set-Cookie:.*=[A-Z0-9]{32});.*
+heartcore@heartcore@*@(<meta name=["']author["'] content=["']{2}).*
+```
+
+|Note|
+|:---|
+|Above vendor name and product name must be match a name in [CPE format](https://en.wikipedia.org/wiki/Common_Platform_Enumeration).|
+
+#### `train_page_type.txt`  
+This is train data for identifying page type usin Machine Learning in <a name='default_mode'>default mode</a>.  
+If you want to add new train data, you have to write it such following format.   
+
+```
+Format: field1@field2
+```
+
+|Type|Field#|Description|
+|:---|:---|:---|
+|Required|1|Category.|
+|Required|2|Feature of page expressed by regex.|
+
+* Example  
+```
+Login@.*(<input.*type=[\"']text[\"'].*name=[\"']user|uid|username|user_name|name[\"']).*>
+Login@.*(<input.*type=[\"']password[\"']).*>
+```
+
+### 3. How to change "Exploit module's option".
+When GyoiThon exploits, it uses **default value** of Exploit module options.  
+If you want to change option values, please input any value to `"user_specify"` in `exploit_tree.json` as following.  
+
+```
+root@kali:~/GyoiThon/modules/data/ ls
+exploit_tree.json
+root@kali:~/GyoiThon/modules/data/ vim exploit_tree.json
 
 ...snip...
-
-xoops@(xoops\.js)
-xoops@(xoops\.css)
-"new product name"@"regex pattern"
-[EOF]
-```
-
- |Note|
- |:---|
- |Above new product name must be a name that Metasploit can identify. And you have to separate new product name and regex pattern using `@`.|
-
-And you have to delete trained data (`*.pkl`).  
-
-```
-local@client:~$ ls "gyoithon root path"/classifier4gyoithon/trained_data/
-train_cms_out.pkl
-train_framework_out.pkl
-train_web_out.pkl
-local@client:~$ rm "gyoithon root path"/classifier4gyoithon/trained_data/*.pkl
-```
-
-#### 3. How to change "Exploit module's option".
-When GyoiThon exploits, it uses **default value** of Exploit module options.  
-If you want to change option values, please input any value to `"user_specify"` in [`exploit_tree.json`](https://raw.githubusercontent.com/gyoisamurai/GyoiThon/master/classifier4gyoithon/data/exploit_tree.json) as following.
-
-```
 
 "unix/webapp/joomla_media_upload_exec": {
     "targets": {
@@ -393,28 +647,39 @@ If you want to change option values, please input any value to `"user_specify"` 
             "user_specify": "/my_original_dir/"
         },
 ```
+
 Above example is to change value of `TARGETURI` option in exploit module "`exploit/unix/webapp/joomla_media_upload_exec`" to "`/my_original_dir/`" from "`/joomla`".  
 
+### 4. How to access via proxy server.
+GyoiThon can access to target server via **proxy server**.  
+If you want to use proxy server, please input proxy server information in `config.ini`.  
+
+|Category|Parameter|Description|
+|:----|:----|:----|
+|Common|proxy|Proxy server information. Format is `scheme://hostname:port` (ex: `http://proxy-example:8083`). |
+||proxy_user|If you need the proxy authentication, please input auth user. |
+||proxy_pass|If you need the proxy authentication, please input auth password. |
+
+| Note |
+|:-----|
+| Now, GyoiThon is implemented only Basic Authentication. |
+
 ## Operation check environment
- * Kali Linux 2017.3 (for Metasploit)
-   * Memory: 8.0GB
-   * Metasploit Framework 4.16.15-dev
- * ubuntu 16.04 LTS (Host OS)
-   * CPU: Intel(R) Core(TM) i5-5200U 2.20GHz
-   * Memory: 8.0GB
-   * Python 3.6.1（Anaconda3）
-   * docopt 0.6.2
-   * jinja2 2.10
-   * msgpack-python 0.4.8
-   * pandas 0.20.3
+ * Kali Linux 2018.2 (for Metasploit)  
+   * CPU: Intel(R) Core(TM) i5-5200U 2.20GHz  
+   * Memory: 8.0GB  
+   * Metasploit Framework 4.16.48-dev  
+   * Python 3.6.6  
 
 ## Licence
 [Apache License 2.0](https://github.com/gyoisamurai/GyoiThon/blob/master/LICENSE)
 
 ## Contact us
- [gyoiler3@gmail.com](gyoiler3@gmail.com)  
+ gyoiler3@gmail.com  
 
  * [Masafumi Masuya](https://www.blackhat.com/asia-18/arsenal/schedule/presenters.html#masafumi-masuya-36855)  
  [https://twitter.com/gyoizamurai](https://twitter.com/gyoizamurai)
+ * [Toshitsugu Yoneyama](https://www.blackhat.com/asia-18/arsenal/schedule/presenters.html#toshitsugu-yoneyama-36864)  
+ [https://twitter.com/yoneyoneyo](https://twitter.com/yoneyoneyo)
  * [Isao Takaesu](https://www.blackhat.com/asia-18/arsenal/schedule/presenters.html#isao-takaesu-33544)  
  [https://twitter.com/bbr_bbq](https://twitter.com/bbr_bbq)
